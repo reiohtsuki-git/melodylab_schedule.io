@@ -1,0 +1,251 @@
+/* teachers.css - 講師一覧ページのスタイル */
+
+.teachers-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.teachers-header {
+    margin-bottom: var(--spacing-8);
+    text-align: center;
+}
+
+.teachers-header h1 {
+    font-size: var(--font-size-3xl);
+    margin-bottom: var(--spacing-4);
+    color: var(--color-text-primary);
+}
+
+.teachers-header .description {
+    font-size: var(--font-size-lg);
+    color: var(--color-text-secondary);
+    max-width: 800px;
+    margin: 0 auto var(--spacing-6);
+}
+
+.search-filter {
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-4);
+    margin-bottom: var(--spacing-6);
+}
+
+.search-box {
+    position: relative;
+    width: 300px;
+}
+
+.search-box svg {
+    position: absolute;
+    left: var(--spacing-3);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-text-tertiary);
+}
+
+.search-box input {
+    width: 100%;
+    padding: var(--spacing-2) var(--spacing-2) var(--spacing-2) var(--spacing-8);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-base);
+    color: var(--color-text-primary);
+    background-color: var(--color-bg-primary);
+    transition: all var(--transition-fast) var(--transition-timing);
+}
+
+.search-box input:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(58, 134, 255, 0.1);
+    outline: none;
+}
+
+.filter-dropdown select {
+    padding: var(--spacing-2) var(--spacing-3);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    font-size: var(--font-size-base);
+    color: var(--color-text-primary);
+    background-color: var(--color-bg-primary);
+    min-width: 180px;
+    transition: all var(--transition-fast) var(--transition-timing);
+}
+
+.filter-dropdown select:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(58, 134, 255, 0.1);
+    outline: none;
+}
+
+.teachers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: var(--spacing-6);
+    margin-bottom: var(--spacing-8);
+}
+
+.teacher-card {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--color-bg-primary);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    transition: all var(--transition-normal) var(--transition-timing);
+}
+
+.teacher-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+.teacher-image {
+    height: 220px;
+    overflow: hidden;
+}
+
+.teacher-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.teacher-card:hover .teacher-image img {
+    transform: scale(1.05);
+}
+
+.teacher-info {
+    padding: var(--spacing-4);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.teacher-name {
+    font-size: var(--font-size-xl);
+    margin-bottom: var(--spacing-2);
+    color: var(--color-text-primary);
+}
+
+.teacher-instrument {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-2);
+    color: var(--color-primary);
+    font-weight: var(--font-weight-medium);
+    margin-bottom: var(--spacing-2);
+}
+
+.teacher-experience {
+    color: var(--color-text-secondary);
+    margin-bottom: var(--spacing-3);
+    font-size: var(--font-size-sm);
+}
+
+.teacher-bio {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-normal);
+    margin-bottom: var(--spacing-4);
+    flex: 1;
+}
+
+.teacher-actions {
+    display: flex;
+    gap: var(--spacing-2);
+    margin-top: auto;
+}
+
+.teacher-actions .btn {
+    flex: 1;
+    font-size: var(--font-size-sm);
+    padding: var(--spacing-2);
+}
+
+.no-results {
+    text-align: center;
+    padding: var(--spacing-8) 0;
+    color: var(--color-text-secondary);
+}
+
+.no-results svg {
+    margin-bottom: var(--spacing-4);
+    color: var(--color-text-tertiary);
+}
+
+.no-results h3 {
+    font-size: var(--font-size-xl);
+    margin-bottom: var(--spacing-3);
+    color: var(--color-text-primary);
+}
+
+.no-results p {
+    color: var(--color-text-secondary);
+    max-width: 450px;
+    margin: 0 auto;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 992px) {
+    .teachers-grid {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .search-filter {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .search-box {
+        width: 100%;
+        max-width: 400px;
+    }
+    
+    .filter-dropdown select {
+        width: 100%;
+        max-width: 400px;
+    }
+}
+
+@media (max-width: 576px) {
+    .teachers-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-4);
+    }
+    
+    .teacher-card {
+        max-width: 450px;
+        margin: 0 auto;
+    }
+    
+    .teacher-actions {
+        flex-direction: column;
+    }
+    
+    .teacher-image {
+        height: 180px;
+    }
+    
+    .teachers-header h1 {
+        font-size: var(--font-size-2xl);
+    }
+    
+    .teachers-header .description {
+        font-size: var(--font-size-base);
+    }
+}
+
+/* ダークモード対応 */
+@media (prefers-color-scheme: dark) {
+    .teacher-card {
+        background-color: var(--color-bg-primary);
+    }
+}
