@@ -1,0 +1,142 @@
+/* toast.css - トースト通知のスタイル */
+
+.toast-container {
+  position: fixed;
+  bottom: var(--spacing-6);
+  right: var(--spacing-6);
+  z-index: var(--z-index-toast);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  max-width: 350px;
+  width: 100%;
+  pointer-events: none;
+}
+
+.toast {
+  background-color: var(--color-bg-primary);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-3) var(--spacing-4);
+  box-shadow: var(--shadow-lg);
+  animation: toastIn var(--transition-normal) var(--transition-timing);
+  pointer-events: auto;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-3);
+  opacity: 0;
+  transform: translateY(20px);
+  border-left: 4px solid var(--color-primary);
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.toast-icon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  color: var(--color-primary);
+}
+
+.toast-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.toast-title {
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--spacing-1);
+  font-size: var(--font-size-base);
+  color: var(--color-text-primary);
+}
+
+.toast-message {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+.toast-close {
+  background: none;
+  border: none;
+  color: var(--color-text-tertiary);
+  cursor: pointer;
+  padding: var(--spacing-1);
+  margin-left: var(--spacing-2);
+  flex-shrink: 0;
+  transition: color var(--transition-fast) var(--transition-timing);
+}
+
+.toast-close:hover {
+  color: var(--color-text-primary);
+}
+
+.toast.success {
+  border-left-color: var(--color-success);
+}
+
+.toast.success .toast-icon {
+  color: var(--color-success);
+}
+
+.toast.warning {
+  border-left-color: var(--color-warning);
+}
+
+.toast.warning .toast-icon {
+  color: var(--color-warning);
+}
+
+.toast.error {
+  border-left-color: var(--color-danger);
+}
+
+.toast.error .toast-icon {
+  color: var(--color-danger);
+}
+
+.toast.info {
+  border-left-color: var(--color-info);
+}
+
+.toast.info .toast-icon {
+  color: var(--color-info);
+}
+
+/* トースト表示・非表示アニメーション */
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes toastOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+.toast.hide {
+  animation: toastOut var(--transition-normal) var(--transition-timing) forwards;
+}
+
+/* モバイル対応 */
+@media (max-width: 576px) {
+  .toast-container {
+    bottom: var(--spacing-4);
+    right: var(--spacing-4);
+    left: var(--spacing-4);
+    max-width: none;
+  }
+}

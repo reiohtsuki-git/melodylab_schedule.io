@@ -1,0 +1,327 @@
+/* responsive.css - レスポンシブ対応用スタイル */
+
+/* タブレット (768px以下) */
+@media (max-width: 768px) {
+  /* ヘッダー調整 */
+  header {
+    padding: var(--spacing-3) 0;
+    margin-bottom: var(--spacing-4);
+  }
+
+  .nav-links {
+    gap: var(--spacing-3);
+  }
+
+  .nav-links a {
+    padding: var(--spacing-1) var(--spacing-2);
+  }
+
+  .user-menu span {
+    display: none; /* モバイルではユーザー名を非表示 */
+  }
+
+  /* レイアウト調整 */
+  .scheduling-container {
+    flex-direction: column;
+    gap: var(--spacing-4);
+  }
+
+  .filters {
+    flex: none;
+    width: 100%;
+  }
+
+  /* フィルターの折りたたみ表示 */
+  .toggle-filters {
+    display: block;
+  }
+
+  .filter-content.hidden {
+    display: none;
+  }
+
+  /* カレンダー調整 */
+  .calendar {
+    padding: var(--spacing-3);
+  }
+
+  .calendar-header {
+    flex-direction: column;
+    gap: var(--spacing-3);
+    align-items: flex-start;
+  }
+
+  .calendar-navigation {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .calendar-navigation .current {
+    font-size: var(--font-size-sm);
+    max-width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .calendar-view-toggle {
+    width: 100%;
+  }
+
+  .calendar-view-toggle button {
+    flex: 1;
+    padding: var(--spacing-2) var(--spacing-2);
+  }
+
+  .week-view {
+    grid-template-columns: 40px repeat(7, minmax(40px, 1fr));
+    font-size: var(--font-size-sm);
+  }
+
+  .week-view .day-header {
+    padding: var(--spacing-1);
+    font-size: var(--font-size-xs);
+  }
+
+  .week-view .hour-label {
+    font-size: var(--font-size-xs);
+  }
+
+  .time-slot {
+    height: var(--calendar-time-slot-height-mobile);
+  }
+
+  .legend {
+    padding: var(--spacing-2);
+    gap: var(--spacing-2);
+  }
+
+  .legend-item {
+    font-size: var(--font-size-xs);
+  }
+
+  /* モーダル調整 */
+  .modal-content {
+    padding: var(--spacing-4);
+    margin: var(--spacing-2);
+  }
+
+  .booking-details p {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-1);
+  }
+
+  .booking-details strong {
+    width: auto;
+  }
+
+  .booking-actions {
+    flex-direction: column;
+    gap: var(--spacing-2);
+  }
+
+  .booking-actions .btn {
+    width: 100%;
+  }
+
+  /* フローティングボタン調整 */
+  .chat-icon {
+    bottom: var(--spacing-4);
+    right: var(--spacing-4);
+    width: 48px;
+    height: 48px;
+  }
+
+  .chat-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* トースト調整 */
+  .toast-container {
+    bottom: var(--spacing-4);
+    right: var(--spacing-4);
+    left: var(--spacing-4);
+    max-width: none;
+  }
+}
+
+/* モバイル (576px以下) */
+@media (max-width: 576px) {
+  /* ヘッダー調整 */
+  .logo {
+    font-size: var(--font-size-xl);
+  }
+
+  .logo img, .logo svg {
+    height: 24px;
+  }
+
+  .nav-links {
+    gap: var(--spacing-2);
+  }
+
+  .nav-links a {
+    padding: var(--spacing-1) var(--spacing-2);
+    font-size: var(--font-size-sm);
+  }
+
+  .user-avatar {
+    width: 32px;
+    height: 32px;
+  }
+
+  /* カレンダー調整 */
+  .calendar-navigation button {
+    padding: var(--spacing-1) var(--spacing-2);
+    font-size: var(--font-size-xs);
+  }
+
+  .calendar-navigation .current {
+    max-width: 120px;
+    font-size: var(--font-size-xs);
+  }
+
+  .calendar-view-toggle {
+    display: none; /* モバイルでは表示切替を非表示 */
+  }
+
+  .week-view {
+    grid-template-columns: 30px repeat(7, minmax(35px, 1fr));
+    font-size: var(--font-size-xs);
+  }
+
+  .week-view .day-header {
+    height: 45px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+  }
+
+  .time-slot {
+    height: 30px;
+  }
+
+  .lesson-card {
+    font-size: calc(var(--font-size-xs) - 1px);
+  }
+
+  /* レジェンド */
+  .legend {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-1);
+  }
+
+  /* モーダル調整 */
+  .modal-content {
+    padding: var(--spacing-3);
+  }
+
+  .modal-header h3 {
+    font-size: var(--font-size-lg);
+  }
+
+  /* 教師プロフィールモーダル調整 */
+  .teacher-profile {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-4);
+  }
+
+  .teacher-profile-image {
+    max-width: 200px;
+    margin: 0 auto;
+  }
+}
+
+/* 超小型デバイス (380px以下) */
+@media (max-width: 380px) {
+  .container {
+    padding: var(--spacing-1);
+  }
+
+  header {
+    padding: var(--spacing-2) 0;
+  }
+
+  .logo {
+    font-size: var(--font-size-lg);
+  }
+
+  .week-view {
+    grid-template-columns: 25px repeat(7, minmax(30px, 1fr));
+    font-size: 9px;
+  }
+
+  .week-view .day-header {
+    padding: 2px;
+    height: 35px;
+  }
+
+  .time-slot {
+    height: 25px;
+  }
+
+  .lesson-card {
+    padding: 1px 2px;
+    font-size: 8px;
+  }
+}
+
+/* 印刷用スタイル */
+@media print {
+  body {
+    background-color: white;
+  }
+
+  .container {
+    max-width: 100%;
+    padding: 0;
+  }
+
+  header, .filters, .chat-icon, .toast-container, .calendar-view-toggle {
+    display: none;
+  }
+
+  .scheduling-container {
+    flex-direction: column;
+  }
+
+  .calendar {
+    box-shadow: none;
+    border: 1px solid #ccc;
+  }
+
+  .week-view {
+    grid-template-columns: 40px repeat(7, 1fr);
+  }
+
+  .time-slot {
+    border: 1px solid #eee;
+  }
+
+  .time-slot.available {
+    background-color: #e0f7fa !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .time-slot.booked {
+    background-color: #e8f5e9 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .lesson-card {
+    border: 1px solid #ccc;
+    background-color: #e8f5e9 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .lesson-card * {
+    color: black !important;
+  }
+}

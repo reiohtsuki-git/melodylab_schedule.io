@@ -1,0 +1,321 @@
+/* modal.css - モーダルコンポーネントのスタイル */
+
+.booking-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(3px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-index-modal);
+  animation: fadeIn var(--transition-normal) var(--transition-timing);
+  padding: var(--spacing-4);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-content {
+  background-color: var(--color-bg-primary);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-6);
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-xl);
+  animation: slideUp var(--transition-normal) var(--transition-timing);
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-6);
+}
+
+.modal-header h3 {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: var(--font-size-2xl);
+  color: var(--color-text-tertiary);
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-full);
+  transition: all var(--transition-fast) var(--transition-timing);
+}
+
+.modal-close:hover {
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text-primary);
+}
+
+.booking-details {
+  margin-bottom: var(--spacing-6);
+}
+
+.booking-details p {
+  margin-bottom: var(--spacing-3);
+  display: flex;
+  align-items: baseline;
+}
+
+.booking-details strong {
+  color: var(--color-primary);
+  width: 120px;
+  flex-shrink: 0;
+}
+
+.booking-status {
+  margin-bottom: var(--spacing-6);
+}
+
+/* プロフィールモーダル */
+.profile-modal .modal-content {
+  max-width: 700px;
+}
+
+.teacher-profile {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: var(--spacing-6);
+}
+
+.teacher-profile-image {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  position: relative;
+  padding-top: 100%; /* 正方形のアスペクト比 */
+}
+
+.teacher-profile-image img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.teacher-profile-info h3 {
+  font-size: var(--font-size-2xl);
+  margin-bottom: var(--spacing-2);
+}
+
+.teacher-profile-info .subtitle {
+  color: var(--color-text-secondary);
+  margin-bottom: var(--spacing-4);
+  font-size: var(--font-size-lg);
+}
+
+.teacher-profile-rating {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-4);
+}
+
+.teacher-profile-rating-stars {
+  color: var(--color-warning);
+}
+
+.teacher-profile-rating-value {
+  font-weight: var(--font-weight-bold);
+}
+
+.teacher-profile-rating-count {
+  color: var(--color-text-tertiary);
+}
+
+.teacher-profile-info p {
+  margin-bottom: var(--spacing-4);
+  line-height: var(--line-height-loose);
+}
+
+.teacher-profile-instruments {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-4);
+}
+
+.teacher-profile-instrument {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  padding: var(--spacing-1) var(--spacing-3);
+  background-color: var(--color-bg-secondary);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-sm);
+}
+
+.teacher-profile-tabs {
+  margin-top: var(--spacing-6);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.teacher-profile-tab-buttons {
+  display: flex;
+  gap: var(--spacing-4);
+  margin-bottom: -1px;
+}
+
+.teacher-profile-tab-button {
+  padding: var(--spacing-3) var(--spacing-1);
+  border: none;
+  background: none;
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+  position: relative;
+}
+
+.teacher-profile-tab-button.active {
+  color: var(--color-primary);
+}
+
+.teacher-profile-tab-button.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: var(--color-primary);
+  border-radius: var(--radius-full);
+}
+
+.teacher-profile-tab-content {
+  padding: var(--spacing-4) 0;
+}
+
+.teacher-profile-tab-panel {
+  display: none;
+}
+
+.teacher-profile-tab-panel.active {
+  display: block;
+}
+
+/* スケジュールプレビュー */
+.schedule-preview {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-4);
+}
+
+.schedule-preview-day {
+  background-color: var(--color-bg-secondary);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-2);
+  text-align: center;
+}
+
+.schedule-preview-day-name {
+  font-weight: var(--font-weight-medium);
+  margin-bottom: var(--spacing-1);
+  font-size: var(--font-size-sm);
+}
+
+.schedule-preview-slots {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: var(--font-size-xs);
+}
+
+.schedule-preview-slot {
+  background-color: var(--color-available);
+  padding: 2px 4px;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-primary);
+}
+
+.schedule-preview-slot.booked {
+  background-color: var(--color-booked);
+  color: var(--color-white);
+}
+
+/* レビューセクション */
+.review-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.review-item {
+  padding-bottom: var(--spacing-4);
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.review-item:last-child {
+  border-bottom: none;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-2);
+}
+
+.review-author {
+  font-weight: var(--font-weight-medium);
+}
+
+.review-date {
+  color: var(--color-text-tertiary);
+  font-size: var(--font-size-sm);
+}
+
+.review-rating {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  margin-bottom: var(--spacing-2);
+  color: var(--color-warning);
+}
+
+.review-content {
+  line-height: var(--line-height-loose);
+  color: var(--color-text-secondary);
+}
+
+/* アクセシビリティ対応 */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* キーボードフォーカス管理 */
+.modal-trap-focus {
+  outline: none;
+}

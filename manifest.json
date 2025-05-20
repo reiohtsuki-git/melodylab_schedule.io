@@ -1,0 +1,55 @@
+{
+  "name": "MelodyLab - オンライン音楽教室",
+  "short_name": "MelodyLab",
+  "description": "オンライン音楽教室のスケジュール管理システム",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3a86ff",
+  "icons": [
+    {
+      "src": "assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "予約スケジュール",
+      "short_name": "予約",
+      "description": "レッスン予約画面を開く",
+      "url": "/index.html",
+      "icons": [{ "src": "assets/schedule-icon.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "講師とチャット",
+      "short_name": "チャット",
+      "description": "講師とのチャット画面を開く",
+      "url": "/chat.html",
+      "icons": [{ "src": "assets/chat-icon.png", "sizes": "96x96" }]
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "assets/screenshot1.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "assets/screenshot2.png",
+      "sizes": "720x1280",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false
+}

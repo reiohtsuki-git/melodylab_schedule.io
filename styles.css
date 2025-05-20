@@ -1,0 +1,14 @@
+/* styles.css - メインスタイルシート */
+@import url('variables.css');  /* 変数定義 */
+@import url('base.css');       /* 基本スタイル */
+@import url('layout.css');     /* レイアウト */
+@import url('components.css'); /* コンポーネント */
+@import url('calendar.css');   /* カレンダー関連 */
+@import url('modal.css');      /* モーダル関連 */
+@import url('toast.css');      /* トースト通知 */
+@import url('utilities.css');  /* ユーティリティクラス */
+@import url('dark-mode.css');  /* ダークモード */
+@import url('responsive.css'); /* レスポンシブ対応 */
+
+/* フォントの読み込み */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap');
