@@ -254,6 +254,8 @@ function generateRandomSlots(count) {
  * フィルタリングされたスロットを取得する関数
  */
 function getFilteredSlots(instrumentFilter, teacherFilter, lessonType, statusFilter) {
+    let filteredSlots = [];
+    
     // フィルターが指定されていない場合は「すべて」として扱う
     const useInstrumentFilter = instrumentFilter && instrumentFilter !== 'all';
     const useTeacherFilter = teacherFilter && teacherFilter !== 'all';
@@ -288,42 +290,36 @@ function getFilteredSlots(instrumentFilter, teacherFilter, lessonType, statusFil
         });
     });
     
-    // スロットキーのみの配列を作成
-    let slotKeys = allSlots.map(slot => slot.slotKey);
-    
     // 予約状態でフィルタリング
     if (useStatusFilter) {
-        switch(statusFilter) {
-            case 'available':
-                // 予約可能なスロットのみを返す（予約済み、確認待ち、キャンセル済みを除外）
-                return slotKeys.filter(slotKey => {
-                    return !window.slotStatus[slotKey] || window.slotStatus[slotKey] === 'available';
-                });
-                
-            case 'booked':
-                // 予約済みのスロットのみを返す
-                return Object.keys(window.slotStatus).filter(slotKey => {
-                    return window.slotStatus[slotKey] === 'booked';
-                });
-                
-            case 'pending':
-                // 確認待ちのスロットのみを返す
-                return Object.keys(window.slotStatus).filter(slotKey => {
-                    return window.slotStatus[slotKey] === 'pending';
-                });
-                
-            case 'cancelled':
-                // キャンセル済みのスロットのみを返す
-                return Object.keys(window.slotStatus).filter(slotKey => {
-                    return window.slotStatus[slotKey] === 'cancelled';
-                });
-                
-            default:
-                return slotKeys;
+        // ステータスに応じたスロットを表示
+        if (statusFilter === 'available') {
+            // 予約可能なスロットのみを表示（既存の予約とペンディング予約を除外）
+            filteredSlots = allSlots.filter(slot => {
+                return !window.slotStatus[slot.slotKey] || window.slotStatus[slot.slotKey] === 'available';
+            }).map(slot => slot.slotKey);
+        } else if (statusFilter === 'booked') {
+            // 予約済みのスロットのみを表示
+            filteredSlots = Object.keys(window.slotStatus).filter(slotKey => {
+                return window.slotStatus[slotKey] === 'booked';
+            });
+        } else if (statusFilter === 'pending') {
+            // 確認待ちのスロットのみを表示
+            filteredSlots = Object.keys(window.slotStatus).filter(slotKey => {
+                return window.slotStatus[slotKey] === 'pending';
+            });
+        } else if (statusFilter === 'cancelled') {
+            // キャンセル済みのスロットのみを表示
+            filteredSlots = Object.keys(window.slotStatus).filter(slotKey => {
+                return window.slotStatus[slotKey] === 'cancelled';
+            });
         }
+    } else {
+        // ステータスフィルターがない場合は予約可能なスロットも表示
+        filteredSlots = allSlots.map(slot => slot.slotKey);
     }
     
-    return slotKeys;
+    return filteredSlots;
 }
 
 /**
@@ -390,58 +386,121 @@ function getJapaneseInstrument(instrument) {
 /**
  * 週表示の実装
  */
-days.forEach((day, index) => {
-    const slotKey = `${day}-${hour}-${minute}`;
-    const timeSlot = document.createElement('div');
-    timeSlot.className = 'time-slot';
+function showWeekView(currentWeekStartDate, instrumentFilter, teacherFilter, lessonType, statusFilter) {
+    // スケジュールグリッドをリセット
+    const scheduleGrid = document.getElementById('schedule-grid');
     
-    // スロットの状態を取得
-    const slotStatus = getSlotStatus(slotKey);
-    
-    // 予約ステータスによるフィルタリング
-    const isFiltered = statusFilter && statusFilter !== 'all';
-    
-    // 予約ステータスが選択されている場合、表示すべきスロットだけを強調表示
-    if (isFiltered) {
-        if (availableSlots.includes(slotKey)) {
-            timeSlot.classList.add(slotStatus);
-            timeSlot.setAttribute('data-slot', slotKey);
-            
-            // 日付を計算
-            const slotDate = new Date(currentWeekStartDate);
-            slotDate.setDate(slotDate.getDate() + index);
-            slotDate.setHours(hour, parseInt(minute), 0);
-            
-            // クリックイベントで予約モーダルを表示
-            timeSlot.addEventListener('click', () => {
-                showBookingModal(slotKey, slotDate);
-            });
-        } else {
-            // フィルタリングで除外されたスロットは灰色表示
-            timeSlot.classList.add('unavailable');
-        }
-    } else {
-        // フィルタリングがない場合は通常表示
-        if (slotStatus !== 'unavailable') {
-            timeSlot.classList.add(slotStatus);
-            timeSlot.setAttribute('data-slot', slotKey);
-            
-            // 日付を計算
-            const slotDate = new Date(currentWeekStartDate);
-            slotDate.setDate(slotDate.getDate() + index);
-            slotDate.setHours(hour, parseInt(minute), 0);
-            
-            // クリックイベントで予約モーダルを表示
-            timeSlot.addEventListener('click', () => {
-                showBookingModal(slotKey, slotDate);
-            });
-        } else {
-            timeSlot.classList.add('unavailable');
-        }
+    // グリッドをクリア
+    while (scheduleGrid.firstChild) {
+        scheduleGrid.removeChild(scheduleGrid.firstChild);
     }
     
-    scheduleGrid.appendChild(timeSlot);
-});
+    // 週表示のスタイルを適用
+    scheduleGrid.className = 'week-view';
+    
+    // モバイル対応 - スタイルをリセットして新しいクラスを追加
+    scheduleGrid.style.minWidth = '';
+    scheduleGrid.style.width = '100%';
+    
+    if (window.innerWidth <= 480) {
+        scheduleGrid.classList.add('mobile-view');
+    } else if (window.innerWidth <= 768) {
+        scheduleGrid.classList.add('tablet-view');
+    }
+    
+    // 時間列のヘッダー（空のセル）
+    const timeHeader = document.createElement('div');
+    timeHeader.className = 'day-header';
+    scheduleGrid.appendChild(timeHeader);
+    
+    // 曜日ヘッダーを追加
+    const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+    const currentDate = new Date(currentWeekStartDate);
+    
+    days.forEach((day, index) => {
+        const dayHeader = document.createElement('div');
+        dayHeader.className = 'day-header';
+        
+        // 日付を計算して表示
+        const date = new Date(currentDate);
+        date.setDate(date.getDate() + index);
+        
+        // 今日の日付にはtoday クラスを追加
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        if (date.getTime() === today.getTime()) {
+            dayHeader.classList.add('today');
+        }
+        
+        // 日付情報を表示
+        const dayName = document.createElement('span');
+        dayName.className = 'day-name';
+        dayName.textContent = window.dayMapping[day];
+        
+        const dayDate = document.createElement('span');
+        dayDate.className = 'day-date';
+        dayDate.textContent = date.getDate();
+        
+        dayHeader.appendChild(dayName);
+        dayHeader.appendChild(dayDate);
+        
+        scheduleGrid.appendChild(dayHeader);
+    });
+    
+    // フィルタリングされた利用可能スロットを取得
+    const availableSlots = getFilteredSlots(instrumentFilter, teacherFilter, lessonType, statusFilter);
+    
+    // 結果カウンターを更新
+    document.getElementById('result-count').textContent = availableSlots.length;
+    
+    // モバイルでは表示範囲を限定する (モバイルでは9:00-18:00だけ表示)
+    const startHour = window.innerWidth <= 768 ? 9 : 9;
+    const endHour = window.innerWidth <= 768 ? 18 : 23;
+    
+    // 時間スロット行を追加
+    for (let hour = startHour; hour <= endHour; hour++) {
+        for (let minute of ['00', '30']) {
+            // 23:30は含めない
+            if (hour === 23 && minute === '30') continue;
+            
+            // 時間ラベルを追加
+            const timeLabel = document.createElement('div');
+            timeLabel.className = 'time-label';
+            timeLabel.textContent = `${hour}:${minute}`;
+            scheduleGrid.appendChild(timeLabel);
+            
+            // 各曜日の時間スロットを追加
+            days.forEach((day, index) => {
+                const slotKey = `${day}-${hour}-${minute}`;
+                const timeSlot = document.createElement('div');
+                timeSlot.className = 'time-slot';
+                
+                // スロットの状態を取得
+                const slotStatus = getSlotStatus(slotKey);
+                
+                if (slotStatus !== 'unavailable') {
+                    timeSlot.classList.add(slotStatus);
+                    timeSlot.setAttribute('data-slot', slotKey);
+                    
+                    // 日付を計算
+                    const slotDate = new Date(currentWeekStartDate);
+                    slotDate.setDate(slotDate.getDate() + index);
+                    slotDate.setHours(hour, parseInt(minute), 0);
+                    
+                    // クリックイベントで予約モーダルを表示
+                    timeSlot.addEventListener('click', () => {
+                        showBookingModal(slotKey, slotDate);
+                    });
+                } else {
+                    timeSlot.classList.add('unavailable');
+                }
+                
+                scheduleGrid.appendChild(timeSlot);
+            });
+        }
+    }
+}
 
 /**
  * 日表示の実装
