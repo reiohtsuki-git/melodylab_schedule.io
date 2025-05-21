@@ -267,6 +267,7 @@
     margin: 0 0 8px;
     line-height: 1.4;
     font-size: 14px;
+    color: #333; /* 明示的に黒色のテキストを指定 */
 }
 
 .message-content p:last-child {
@@ -288,6 +289,7 @@
     margin-top: 8px;
     gap: 8px;
     font-size: 13px;
+    color: #333; /* 明示的に黒色のテキストを指定 */
 }
 
 .message-attachment svg {
@@ -351,6 +353,7 @@
     border: 1px solid #e0e0e0;
     outline: none;
     font-size: 14px;
+    color: #333; /* 明示的に黒色のテキストを指定 */
 }
 
 .input-actions {
