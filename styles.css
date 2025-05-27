@@ -12,6 +12,7 @@
   --color-bg-hover: #e5e7eb;
   --color-text-primary: #111827;
   --color-text-secondary: #6b7280;
+  --color-text-tertiary: #9ca3af;
   --color-border: #e5e7eb;
   --color-available: #dcfce7;
   --color-booked: #fecaca;
@@ -21,23 +22,29 @@
   --spacing-3: 0.75rem;
   --spacing-4: 1rem;
   --spacing-6: 1.5rem;
+  --spacing-8: 2rem;
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.875rem;
   --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
   --font-size-xl: 1.25rem;
   --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.875rem;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
+  --line-height-normal: 1.5;
   --radius-md: 0.375rem;
   --radius-lg: 0.5rem;
   --radius-full: 9999px;
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
   --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
   --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
   --z-index-sticky: 1020;
   --z-index-fixed: 1030;
   --z-index-modal: 1050;
   --transition-fast: 150ms;
+  --transition-normal: 300ms;
   --transition-timing: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -592,6 +599,46 @@ header {
   overflow-y: auto;
 }
 
+/* Toast通知のスタイル */
+.toast-container {
+  position: fixed;
+  top: var(--spacing-4);
+  right: var(--spacing-4);
+  z-index: var(--z-index-modal);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.toast {
+  background-color: var(--color-bg-primary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-3) var(--spacing-4);
+  box-shadow: var(--shadow-lg);
+  max-width: 350px;
+  opacity: 0;
+  transform: translateX(100%);
+  transition: all var(--transition-normal);
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.toast.success {
+  border-left: 4px solid var(--color-success);
+}
+
+.toast.error {
+  border-left: 4px solid var(--color-danger);
+}
+
+.toast.warning {
+  border-left: 4px solid var(--color-warning);
+}
+
 @media (max-width: 992px) {
   .scheduling-container {
     flex-direction: column;
@@ -641,6 +688,16 @@ header {
   .legend {
     flex-direction: column;
     gap: var(--spacing-2);
+  }
+  
+  .toast-container {
+    top: var(--spacing-2);
+    right: var(--spacing-2);
+    left: var(--spacing-2);
+  }
+  
+  .toast {
+    max-width: 100%;
   }
 }
 
