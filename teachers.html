@@ -70,9 +70,9 @@
                             <option value="all">すべての楽器</option>
                             <option value="piano">ピアノ</option>
                             <option value="guitar">ギター</option>
-                            <option value="violin">バイオリン</option>
-                            <option value="vocal">ボーカル</option>
-                            <option value="drums">ドラム</option>
+                            <option value="dtm">DTM</option>
+                            <option value="composition">作曲</option>
+                            <option value="classical-guitar">クラシックギター</option>
                             <option value="bass">ベース</option>
                             <option value="flute">フルート</option>
                             <option value="saxophone">サックス</option>
@@ -159,7 +159,7 @@
                 </div>
                 
                 <!-- 講師カード 3 -->
-                <div class="teacher-card" data-instrument="violin">
+                <div class="teacher-card" data-instrument="dtm">
                     <div class="teacher-image">
                         <img src="assets/teacher-sato.jpg" alt="佐藤先生" onerror="this.src='assets/teacher-placeholder.jpg'">
                     </div>
@@ -167,14 +167,14 @@
                         <h2 class="teacher-name">佐藤 恵</h2>
                         <p class="teacher-instrument">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="12" y1="2" x2="12" y2="22"></line>
-                                <path d="M5 4.76a8 8 0 0 1 7-4 8 8 0 0 1 7 4"></path>
-                                <path d="M5 19.24a8 8 0 0 0 7 4 8 8 0 0 0 7-4"></path>
+                                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                                <line x1="8" y1="21" x2="16" y2="21"></line>
+                                <line x1="12" y1="17" x2="12" y2="21"></line>
                             </svg>
-                            バイオリン
+                            DTM
                         </p>
                         <p class="teacher-experience">講師歴：10年</p>
-                        <p class="teacher-bio">国立音楽大学バイオリン専攻卒業。オーケストラでの演奏経験も豊富。クラシックを中心に、初心者からコンクール出場者まで丁寧に指導します。</p>
+                        <p class="teacher-bio">音楽プロデューサーとして多数の楽曲制作を手がける。Logic Pro、Cubase、Studio OneなどのDAWソフトを使った楽曲制作から音響制作まで幅広く指導します。</p>
                         <div class="teacher-actions">
                             <button class="btn btn-primary view-schedule" data-teacher="sato">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -196,7 +196,7 @@
                 </div>
                 
                 <!-- 講師カード 4 -->
-                <div class="teacher-card" data-instrument="vocal">
+                <div class="teacher-card" data-instrument="composition">
                     <div class="teacher-image">
                         <img src="assets/teacher-nakamura.jpg" alt="中村先生" onerror="this.src='assets/teacher-placeholder.jpg'">
                     </div>
@@ -204,14 +204,16 @@
                         <h2 class="teacher-name">中村 由美</h2>
                         <p class="teacher-instrument">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M12 18a3.5 3.5 0 0 0 0-7v0"></path>
-                                <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-                                <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14,2 14,8 20,8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                <polyline points="10,9 9,9 8,9"></polyline>
                             </svg>
-                            ボーカル
+                            作曲
                         </p>
                         <p class="teacher-experience">講師歴：12年</p>
-                        <p class="teacher-bio">音楽専門学校声楽科卒業。プロ歌手として活動中。ポップス、ロック、ジャズなど幅広いジャンルに対応。基礎発声から表現力まで総合的に指導します。</p>
+                        <p class="teacher-bio">音楽大学作曲科卒業。映画、ゲーム、CM音楽など多岐にわたる楽曲制作の経験を持つ。クラシックからポップスまで様々なジャンルの作曲技法を指導します。</p>
                         <div class="teacher-actions">
                             <button class="btn btn-primary view-schedule" data-teacher="nakamura">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -233,7 +235,7 @@
                 </div>
                 
                 <!-- 講師カード 5 -->
-                <div class="teacher-card" data-instrument="drums">
+                <div class="teacher-card" data-instrument="classical-guitar">
                     <div class="teacher-image">
                         <img src="assets/teacher-yamamoto.jpg" alt="山本先生" onerror="this.src='assets/teacher-placeholder.jpg'">
                     </div>
@@ -241,14 +243,13 @@
                         <h2 class="teacher-name">山本 直樹</h2>
                         <p class="teacher-instrument">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <circle cx="12" cy="12" r="6"></circle>
-                                <circle cx="12" cy="12" r="2"></circle>
+                                <circle cx="12" cy="8" r="7"></circle>
+                                <polyline points="8.21,13.89 7,23 12,20 17,23 15.79,13.88"></polyline>
                             </svg>
-                            ドラム
+                            クラシックギター
                         </p>
                         <p class="teacher-experience">講師歴：7年</p>
-                        <p class="teacher-bio">音楽専門学校ドラム科卒業。バンド活動歴10年以上。基本的なビートからアドバンスド・テクニックまで、レベルに合わせて指導します。</p>
+                        <p class="teacher-bio">東京音楽大学クラシックギター専攻卒業。国内外のコンクールで多数入賞。バロックから現代曲まで幅広いレパートリーで、正しい技術と音楽性を重視した指導を行います。</p>
                         <div class="teacher-actions">
                             <button class="btn btn-primary view-schedule" data-teacher="yamamoto">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
