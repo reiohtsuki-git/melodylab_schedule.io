@@ -7,28 +7,28 @@
 }
 
 .teachers-header {
-    margin-bottom: var(--spacing-8);
+    margin-bottom: var(--spacing-8, 2rem);
     text-align: center;
 }
 
 .teachers-header h1 {
-    font-size: var(--font-size-3xl);
-    margin-bottom: var(--spacing-4);
-    color: var(--color-text-primary);
+    font-size: var(--font-size-3xl, 1.875rem);
+    margin-bottom: var(--spacing-4, 1rem);
+    color: var(--color-text-primary, #111827);
 }
 
 .teachers-header .description {
-    font-size: var(--font-size-lg);
-    color: var(--color-text-secondary);
+    font-size: var(--font-size-lg, 1.125rem);
+    color: var(--color-text-secondary, #6b7280);
     max-width: 800px;
-    margin: 0 auto var(--spacing-6);
+    margin: 0 auto var(--spacing-6, 1.5rem);
 }
 
 .search-filter {
     display: flex;
     justify-content: center;
-    gap: var(--spacing-4);
-    margin-bottom: var(--spacing-6);
+    gap: var(--spacing-4, 1rem);
+    margin-bottom: var(--spacing-6, 1.5rem);
 }
 
 .search-box {
@@ -38,42 +38,42 @@
 
 .search-box svg {
     position: absolute;
-    left: var(--spacing-3);
+    left: var(--spacing-3, 0.75rem);
     top: 50%;
     transform: translateY(-50%);
-    color: var(--color-text-tertiary);
+    color: var(--color-text-tertiary, #9ca3af);
 }
 
 .search-box input {
     width: 100%;
-    padding: var(--spacing-2) var(--spacing-2) var(--spacing-2) var(--spacing-8);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    font-size: var(--font-size-base);
-    color: var(--color-text-primary);
-    background-color: var(--color-bg-primary);
-    transition: all var(--transition-fast) var(--transition-timing);
+    padding: var(--spacing-2, 0.5rem) var(--spacing-2, 0.5rem) var(--spacing-2, 0.5rem) var(--spacing-8, 2rem);
+    border: 1px solid var(--color-border, #e5e7eb);
+    border-radius: var(--radius-md, 0.375rem);
+    font-size: var(--font-size-base, 1rem);
+    color: var(--color-text-primary, #111827);
+    background-color: var(--color-bg-primary, #ffffff);
+    transition: all var(--transition-fast, 150ms) var(--transition-timing, cubic-bezier(0.4, 0, 0.2, 1));
 }
 
 .search-box input:focus {
-    border-color: var(--color-primary);
+    border-color: var(--color-primary, #3a86ff);
     box-shadow: 0 0 0 3px rgba(58, 134, 255, 0.1);
     outline: none;
 }
 
 .filter-dropdown select {
-    padding: var(--spacing-2) var(--spacing-3);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius-md);
-    font-size: var(--font-size-base);
-    color: var(--color-text-primary);
-    background-color: var(--color-bg-primary);
+    padding: var(--spacing-2, 0.5rem) var(--spacing-3, 0.75rem);
+    border: 1px solid var(--color-border, #e5e7eb);
+    border-radius: var(--radius-md, 0.375rem);
+    font-size: var(--font-size-base, 1rem);
+    color: var(--color-text-primary, #111827);
+    background-color: var(--color-bg-primary, #ffffff);
     min-width: 180px;
-    transition: all var(--transition-fast) var(--transition-timing);
+    transition: all var(--transition-fast, 150ms) var(--transition-timing, cubic-bezier(0.4, 0, 0.2, 1));
 }
 
 .filter-dropdown select:focus {
-    border-color: var(--color-primary);
+    border-color: var(--color-primary, #3a86ff);
     box-shadow: 0 0 0 3px rgba(58, 134, 255, 0.1);
     outline: none;
 }
@@ -81,28 +81,30 @@
 .teachers-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: var(--spacing-6);
-    margin-bottom: var(--spacing-8);
+    gap: var(--spacing-6, 1.5rem);
+    margin-bottom: var(--spacing-8, 2rem);
 }
 
 .teacher-card {
     display: flex;
     flex-direction: column;
-    background-color: var(--color-bg-primary);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-md);
+    background-color: var(--color-bg-primary, #ffffff);
+    border-radius: var(--radius-lg, 0.5rem);
+    box-shadow: var(--shadow-md, 0 4px 6px -1px rgb(0 0 0 / 0.1));
     overflow: hidden;
-    transition: all var(--transition-normal) var(--transition-timing);
+    transition: all var(--transition-normal, 300ms) var(--transition-timing, cubic-bezier(0.4, 0, 0.2, 1));
 }
 
 .teacher-card:hover {
     transform: translateY(-5px);
-    box-shadow: var(--shadow-lg);
+    box-shadow: var(--shadow-lg, 0 10px 15px -3px rgb(0 0 0 / 0.1));
 }
 
 .teacher-image {
     height: 220px;
     overflow: hidden;
+    position: relative;
+    background-color: var(--color-bg-secondary, #f9fafb);
 }
 
 .teacher-image img {
@@ -110,79 +112,90 @@
     height: 100%;
     object-fit: cover;
     transition: transform 0.5s ease;
+    display: block;
 }
 
 .teacher-card:hover .teacher-image img {
     transform: scale(1.05);
 }
 
+/* エラー時のフォールバック */
+.teacher-image img[src=""],
+.teacher-image img:not([src]),
+.teacher-image img[src*="placeholder"] {
+    background-color: var(--color-bg-tertiary, #f3f4f6);
+    background-image: url("data:image/svg+xml,%3csvg width='100' height='100' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='%23f3f4f6'/%3e%3ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='monospace' font-size='14px' fill='%236b7280'%3e画像なし%3c/text%3e%3c/svg%3e");
+    background-size: cover;
+    background-position: center;
+}
+
 .teacher-info {
-    padding: var(--spacing-4);
+    padding: var(--spacing-4, 1rem);
     flex: 1;
     display: flex;
     flex-direction: column;
 }
 
 .teacher-name {
-    font-size: var(--font-size-xl);
-    margin-bottom: var(--spacing-2);
-    color: var(--color-text-primary);
+    font-size: var(--font-size-xl, 1.25rem);
+    margin-bottom: var(--spacing-2, 0.5rem);
+    color: var(--color-text-primary, #111827);
 }
 
 .teacher-instrument {
     display: flex;
     align-items: center;
-    gap: var(--spacing-2);
-    color: var(--color-primary);
-    font-weight: var(--font-weight-medium);
-    margin-bottom: var(--spacing-2);
+    gap: var(--spacing-2, 0.5rem);
+    color: var(--color-primary, #3a86ff);
+    font-weight: var(--font-weight-medium, 500);
+    margin-bottom: var(--spacing-2, 0.5rem);
 }
 
 .teacher-experience {
-    color: var(--color-text-secondary);
-    margin-bottom: var(--spacing-3);
-    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary, #6b7280);
+    margin-bottom: var(--spacing-3, 0.75rem);
+    font-size: var(--font-size-sm, 0.875rem);
 }
 
 .teacher-bio {
-    color: var(--color-text-secondary);
-    font-size: var(--font-size-sm);
-    line-height: var(--line-height-normal);
-    margin-bottom: var(--spacing-4);
+    color: var(--color-text-secondary, #6b7280);
+    font-size: var(--font-size-sm, 0.875rem);
+    line-height: var(--line-height-normal, 1.5);
+    margin-bottom: var(--spacing-4, 1rem);
     flex: 1;
 }
 
 .teacher-actions {
     display: flex;
-    gap: var(--spacing-2);
+    gap: var(--spacing-2, 0.5rem);
     margin-top: auto;
 }
 
 .teacher-actions .btn {
     flex: 1;
-    font-size: var(--font-size-sm);
-    padding: var(--spacing-2);
+    font-size: var(--font-size-sm, 0.875rem);
+    padding: var(--spacing-2, 0.5rem);
 }
 
 .no-results {
     text-align: center;
-    padding: var(--spacing-8) 0;
-    color: var(--color-text-secondary);
+    padding: var(--spacing-8, 2rem) 0;
+    color: var(--color-text-secondary, #6b7280);
 }
 
 .no-results svg {
-    margin-bottom: var(--spacing-4);
-    color: var(--color-text-tertiary);
+    margin-bottom: var(--spacing-4, 1rem);
+    color: var(--color-text-tertiary, #9ca3af);
 }
 
 .no-results h3 {
-    font-size: var(--font-size-xl);
-    margin-bottom: var(--spacing-3);
-    color: var(--color-text-primary);
+    font-size: var(--font-size-xl, 1.25rem);
+    margin-bottom: var(--spacing-3, 0.75rem);
+    color: var(--color-text-primary, #111827);
 }
 
 .no-results p {
-    color: var(--color-text-secondary);
+    color: var(--color-text-secondary, #6b7280);
     max-width: 450px;
     margin: 0 auto;
 }
@@ -218,7 +231,7 @@
 @media (max-width: 576px) {
     .teachers-grid {
         grid-template-columns: 1fr;
-        gap: var(--spacing-4);
+        gap: var(--spacing-4, 1rem);
     }
     
     .teacher-card {
@@ -235,17 +248,17 @@
     }
     
     .teachers-header h1 {
-        font-size: var(--font-size-2xl);
+        font-size: var(--font-size-2xl, 1.5rem);
     }
     
     .teachers-header .description {
-        font-size: var(--font-size-base);
+        font-size: var(--font-size-base, 1rem);
     }
 }
 
 /* ダークモード対応 */
 @media (prefers-color-scheme: dark) {
     .teacher-card {
-        background-color: var(--color-bg-primary);
+        background-color: var(--color-bg-primary, #ffffff);
     }
 }
