@@ -19,20 +19,12 @@
             <form id="login-form">
                 <div class="form-group">
                     <label for="teacher-id">講師ID</label>
-                    <select id="teacher-id" required>
-                        <option value="">講師を選択してください</option>
-                        <option value="tanaka">田中先生（ピアノ）</option>
-                        <option value="suzuki">鈴木先生（ギター）</option>
-                        <option value="sato">佐藤先生（DTM）</option>
-                        <option value="nakamura">中村先生（作曲）</option>
-                        <option value="yamamoto">山本先生（クラシックギター）</option>
-                        <option value="kato">加藤先生（ベース）</option>
-                    </select>
+                    <input type="text" id="teacher-id" required placeholder="講師IDを入力してください" autocomplete="username">
                 </div>
                 
                 <div class="form-group">
                     <label for="password">パスワード</label>
-                    <input type="password" id="password" required placeholder="パスワードを入力">
+                    <input type="password" id="password" required placeholder="パスワードを入力してください" autocomplete="current-password">
                 </div>
                 
                 <button type="submit" class="btn btn-primary">ログイン</button>
@@ -41,6 +33,8 @@
             <div class="login-info">
                 <p><strong>デモ用ログイン情報:</strong></p>
                 <p>講師ID: suzuki, パスワード: demo123</p>
+                <p>講師ID: tanaka, パスワード: demo123</p>
+                <p>講師ID: sato, パスワード: demo123</p>
                 <p>（実運用時は適切な認証システムを実装してください）</p>
             </div>
         </div>
@@ -58,18 +52,36 @@
         document.getElementById('login-form').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            const teacherId = document.getElementById('teacher-id').value;
+            const teacherId = document.getElementById('teacher-id').value.trim();
             const password = document.getElementById('password').value;
             
+            // 入力値検証
+            if (!teacherId) {
+                alert('講師IDを入力してください');
+                return;
+            }
+            
+            if (!password) {
+                alert('パスワードを入力してください');
+                return;
+            }
+            
             // デモ用認証（実運用時は適切な認証を実装）
-            if (teacherId && password === 'demo123') {
-                // ローカルストレージに講師情報を保存
-                localStorage.setItem('currentTeacher', teacherId);
+            if (password === 'demo123') {
+                // 有効な講師IDかチェック
+                const validTeacherIds = ['tanaka', 'suzuki', 'sato', 'nakamura', 'yamamoto', 'kato'];
                 
-                // ダッシュボードにリダイレクト
-                window.location.href = 'teacher-dashboard.html';
+                if (validTeacherIds.includes(teacherId)) {
+                    // ローカルストレージに講師情報を保存
+                    localStorage.setItem('currentTeacher', teacherId);
+                    
+                    // ダッシュボードにリダイレクト
+                    window.location.href = 'teacher-dashboard.html';
+                } else {
+                    alert('無効な講師IDです。有効なID: ' + validTeacherIds.join(', '));
+                }
             } else {
-                alert('講師ID または パスワードが正しくありません');
+                alert('パスワードが正しくありません');
             }
         });
         
@@ -77,6 +89,22 @@
         document.addEventListener('DOMContentLoaded', function() {
             if (typeof initializeFirebase !== 'undefined') {
                 initializeFirebase();
+            }
+            
+            // フォーカスを講師IDフィールドに設定
+            document.getElementById('teacher-id').focus();
+        });
+        
+        // Enterキーでのフォーム送信をサポート
+        document.getElementById('teacher-id').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('password').focus();
+            }
+        });
+        
+        document.getElementById('password').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('login-form').dispatchEvent(new Event('submit'));
             }
         });
     </script>
