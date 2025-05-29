@@ -37,6 +37,32 @@
             margin-bottom: 24px;
             gap: 20px;
         }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-left: auto;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #3a86ff;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .user-name {
+            color: #2c3e50;
+            font-weight: 500;
+            font-size: 16px;
+        }
         
         .logo {
             display: flex;
@@ -422,7 +448,10 @@
                 <img src="../music_school_logo_rem.png" alt="Melody Lab Logo" width="32" height="32">
                 <a href="index.html">MelodyLab</a>
             </div>
-            <h1 style="margin-left: auto; color: #2c3e50;">📅 スケジュール設定</h1>
+            <div class="user-info">
+                <div class="user-avatar">鈴</div>
+                <span class="user-name">鈴木先生</span>
+            </div>
         </header>
 
         <div class="tabs">
