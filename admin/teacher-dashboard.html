@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>講師ダッシュボード - MelodyLab</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../css/admin-styles.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- ヘッダー部分 -->
+        <div class="dashboard-header">
+            <div class="teacher-info">
+                <div class="teacher-avatar" id="teacher-avatar">鈴</div>
+                <div class="teacher-details">
+                    <h2 id="teacher-name">鈴木先生</h2>
+                    <p id="teacher-instruments">ギター講師</p>
+                </div>
+            </div>
+            
+            <div class="dashboard-actions">
+                <button class="btn btn-primary" onclick="location.href='schedule-setup.html'">
+                    📅 スケジュール設定
+                </button>
+                <button class="btn btn-outline" onclick="location.href='../index.html'">
+                    👥 生徒画面を確認
+                </button>
+                <button class="btn btn-secondary" onclick="logout()">
+                    ログアウト
+                </button>
+            </div>
+        </div>
+        
+        <!-- ダッシュボード概要カード -->
+        <div class="dashboard-grid">
+            <div class="dashboard-card">
+                <h3>
+                    <span class="card-icon schedule">📅</span>
+                    今日のスケジュール
+                </h3>
+                <div id="today-schedule">
+                    <p>読み込み中...</p>
+                </div>
+            </div>
+            
+            <div class="dashboard-card">
+                <h3>
+                    <span class="card-icon bookings">📝</span>
+                    今日の予約
+                </h3>
+                <div id="today-bookings">
+                    <p>読み込み中...</p>
+                </div>
+            </div>
+            
+            <div class="dashboard-card">
+                <h3>
+                    <span class="card-icon stats">📊</span>
+                    統計情報
+                </h3>
+                <div id="stats-info">
+                    <p>今週の予約: <span id="weekly-bookings">0</span>件</p>
+                    <p>今月の予約: <span id="monthly-bookings">0</span>件</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 今週の予約一覧 -->
+        <div class="booking-list">
+            <h3>📋 今週の予約一覧</h3>
+            <div id="weekly-booking-list">
+                <p>読み込み中...</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/data-structures.js"></script>
+    <script>
+        let currentTeacher = null;
+        let bookingsListener = null;
+        
+        // ページ初期化
+        document.addEventListener('DOMContentLoaded', async function() {
+            // 認証チェック
+            const teacherId = localStorage.getItem('currentTeacher');
+            if (!teacherId) {
+                alert('ログインが必要です');
+                location.href = 'teacher-login.html';
+                return;
+            }
+            
+            // Firebase初期化
+            if (typeof initializeFirebase !== 'undefined') {
+                initializeFirebase();
+            }
+            
+            // 講師情報を設定
+            currentTeacher = teacherId;
+            await loadTeacherInfo();
+            await loadDashboardData();
+            
+            // リアルタイム更新の設定
+            setupRealTimeUpdates();
+        });
+        
+        // 講師情報の読み込み
+        async function loadTeacherInfo() {
+            // デフォルトデータから講師情報を取得
+            const teacher = DefaultData.teachers.find(t => t.id === currentTeacher);
+            if (teacher) {
+                document.getElementById('teacher-name').textContent = teacher.name;
+                document.getElementById('teacher-avatar').textContent = teacher.avatar;
+                document.getElementById('teacher-instruments').textContent = 
+                    teacher.instruments.map(i => DataUtils.getInstrumentName(i)).join('、') + '講師';
+            }
+        }
+        
+        // ダッシュボードデータの読み込み
+        async function loadDashboardData() {
+            try {
+                // 今日の日付
+                const today = new Date().toISOString().split('T')[0];
+                
+                // 今日のスケジュール表示（サンプル）
+                updateTodaySchedule();
+                
+                // 今日の予約を取得
+                if (typeof FirebaseDB !== 'undefined') {
+                    const bookings = await FirebaseDB.getBookings(currentTeacher);
+                    updateTodayBookings(bookings.filter(b => b.date === today));
+                    updateWeeklyBookings(bookings);
+                    updateStats(bookings);
+                } else {
+                    // Firebase未設定時のサンプルデータ
+                    showSampleData();
+                }
+            } catch (error) {
+                console.error('データ読み込みエラー:', error);
+                showSampleData();
+            }
+        }
+        
+        // 今日のスケジュール表示
+        function updateTodaySchedule() {
+            const today = new Date().getDay(); // 0=日曜日
+            const scheduleEl = document.getElementById('today-schedule');
+            
+            // サンプルスケジュール（土曜日の場合）
+            if (today === 6) {
+                scheduleEl.innerHTML = `
+                    <p>✅ 9:00-17:00 レッスン対応時間</p>
+                    <p>⏰ 50分レッスン + 10分休憩</p>
+                `;
+            } else {
+                scheduleEl.innerHTML = '<p>本日は休講日です</p>';
+            }
+        }
+        
+        // 今日の予約表示
+        function updateTodayBookings(todayBookings) {
+            const bookingsEl = document.getElementById('today-bookings');
+            
+            if (todayBookings.length === 0) {
+                bookingsEl.innerHTML = '<p>本日の予約はありません</p>';
+                return;
+            }
+            
+            const html = todayBookings.map(booking => `
+                <div class="booking-item">
+                    <div class="booking-info">
+                        <div class="booking-time">${booking.startTime} - ${booking.endTime}</div>
+                        <div class="booking-student">${booking.studentId}さん (${DataUtils.getInstrumentName(booking.instrument)})</div>
+                    </div>
+                    <span class="booking-status status-${booking.status}">${booking.status === 'confirmed' ? '確定' : 'キャンセル'}</span>
+                </div>
+            `).join('');
+            
+            bookingsEl.innerHTML = html;
+        }
+        
+        // 今週の予約一覧表示
+        function updateWeeklyBookings(allBookings) {
+            const listEl = document.getElementById('weekly-booking-list');
+            
+            // 今週の予約をフィルタ
+            const thisWeek = getThisWeekBookings(allBookings);
+            
+            if (thisWeek.length === 0) {
+                listEl.innerHTML = '<p>今週の予約はありません</p>';
+                return;
+            }
+            
+            const html = thisWeek.map(booking => `
+                <div class="booking-item">
+                    <div class="booking-info">
+                        <div class="booking-time">${booking.date} ${booking.startTime} - ${booking.endTime}</div>
+                        <div class="booking-student">${booking.studentId}さん (${DataUtils.getInstrumentName(booking.instrument)})</div>
+                    </div>
+                    <span class="booking-status status-${booking.status}">${booking.status === 'confirmed' ? '確定' : 'キャンセル'}</span>
+                </div>
+            `).join('');
+            
+            listEl.innerHTML = html;
+        }
+        
+        // 統計情報の更新
+        function updateStats(allBookings) {
+            const thisWeek = getThisWeekBookings(allBookings);
+            const thisMonth = getThisMonthBookings(allBookings);
+            
+            document.getElementById('weekly-bookings').textContent = thisWeek.length;
+            document.getElementById('monthly-bookings').textContent = thisMonth.length;
+        }
+        
+        // 今週の予約を取得
+        function getThisWeekBookings(bookings) {
+            const today = new Date();
+            const startOfWeek = new Date(today.setDate(today.getDate() - today.getDay()));
+            const endOfWeek = new Date(today.setDate(startOfWeek.getDate() + 6));
+            
+            return bookings.filter(booking => {
+                const bookingDate = new Date(booking.date);
+                return bookingDate >= startOfWeek && bookingDate <= endOfWeek;
+            });
+        }
+        
+        // 今月の予約を取得
+        function getThisMonthBookings(bookings) {
+            const thisMonth = new Date().toISOString().slice(0, 7); // YYYY-MM
+            return bookings.filter(booking => booking.date.startsWith(thisMonth));
+        }
+        
+        // サンプルデータの表示（Firebase未設定時）
+        function showSampleData() {
+            document.getElementById('today-bookings').innerHTML = `
+                <div class="booking-item">
+                    <div class="booking-info">
+                        <div class="booking-time">10:00 - 10:50</div>
+                        <div class="booking-student">山田太郎さん (ギター)</div>
+                    </div>
+                    <span class="booking-status status-confirmed">確定</span>
+                </div>
+            `;
+            
+            document.getElementById('weekly-booking-list').innerHTML = `
+                <div class="booking-item">
+                    <div class="booking-info">
+                        <div class="booking-time">2025-05-31 10:00 - 10:50</div>
+                        <div class="booking-student">山田太郎さん (ギター)</div>
+                    </div>
+                    <span class="booking-status status-confirmed">確定</span>
+                </div>
+            `;
+            
+            document.getElementById('weekly-bookings').textContent = '1';
+            document.getElementById('monthly-bookings').textContent = '4';
+        }
+        
+        // リアルタイム更新の設定
+        function setupRealTimeUpdates() {
+            if (typeof FirebaseListeners !== 'undefined' && currentTeacher) {
+                bookingsListener = FirebaseListeners.listenToBookingChanges(currentTeacher, (bookings) => {
+                    const today = new Date().toISOString().split('T')[0];
+                    updateTodayBookings(bookings.filter(b => b.date === today));
+                    updateWeeklyBookings(bookings);
+                    updateStats(bookings);
+                });
+            }
+        }
+        
+        // ログアウト処理
+        function logout() {
+            if (confirm('ログアウトしますか？')) {
+                localStorage.removeItem('currentTeacher');
+                if (bookingsListener) {
+                    bookingsListener(); // リスナーを解除
+                }
+                location.href = 'teacher-login.html';
+            }
+        }
+    </script>
+</body>
+</html>
