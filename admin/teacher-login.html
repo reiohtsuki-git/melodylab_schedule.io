@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>講師ログイン - MelodyLab</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../css/admin-styles.css">
+</head>
+<body>
+    <div class="admin-container">
+        <div class="login-form">
+            <div class="logo">
+                <img src="../music_school_logo_rem.png" alt="MelodyLab Logo" width="64" height="64">
+                <h1>MelodyLab</h1>
+                <p>講師管理システム</p>
+            </div>
+            
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="teacher-id">講師ID</label>
+                    <select id="teacher-id" required>
+                        <option value="">講師を選択してください</option>
+                        <option value="tanaka">田中先生（ピアノ）</option>
+                        <option value="suzuki">鈴木先生（ギター）</option>
+                        <option value="sato">佐藤先生（DTM）</option>
+                        <option value="nakamura">中村先生（作曲）</option>
+                        <option value="yamamoto">山本先生（クラシックギター）</option>
+                        <option value="kato">加藤先生（ベース）</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">パスワード</label>
+                    <input type="password" id="password" required placeholder="パスワードを入力">
+                </div>
+                
+                <button type="submit" class="btn btn-primary">ログイン</button>
+            </form>
+            
+            <div class="login-info">
+                <p><strong>デモ用ログイン情報:</strong></p>
+                <p>講師ID: suzuki, パスワード: demo123</p>
+                <p>（実運用時は適切な認証システムを実装してください）</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/data-structures.js"></script>
+    <script>
+        // 簡易認証システム（デモ用）
+        document.getElementById('login-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const teacherId = document.getElementById('teacher-id').value;
+            const password = document.getElementById('password').value;
+            
+            // デモ用認証（実運用時は適切な認証を実装）
+            if (teacherId && password === 'demo123') {
+                // ローカルストレージに講師情報を保存
+                localStorage.setItem('currentTeacher', teacherId);
+                
+                // ダッシュボードにリダイレクト
+                window.location.href = 'teacher-dashboard.html';
+            } else {
+                alert('講師ID または パスワードが正しくありません');
+            }
+        });
+        
+        // Firebase初期化
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof initializeFirebase !== 'undefined') {
+                initializeFirebase();
+            }
+        });
+    </script>
+</body>
+</html>
