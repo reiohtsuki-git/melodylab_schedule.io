@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>スケジュール設定 - MelodyLab</title>
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="../css/admin-styles.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <div class="teacher-info">
+                <div class="teacher-avatar" id="teacher-avatar">鈴</div>
+                <div class="teacher-details">
+                    <h2>スケジュール設定</h2>
+                    <p id="teacher-name">鈴木先生</p>
+                </div>
+            </div>
+            
+            <div class="dashboard-actions">
+                <button class="btn btn-primary" onclick="saveSchedule()">
+                    💾 保存
+                </button>
+                <button class="btn btn-outline" onclick="location.href='teacher-dashboard.html'">
+                    ← ダッシュボードに戻る
+                </button>
+            </div>
+        </div>
+        
+        <div class="schedule-setup">
+            <h3>📅 基本スケジュール設定</h3>
+            <p>レッスンを提供する曜日と時間帯を設定してください。</p>
+            
+            <div id="schedule-grid">
+                <!-- 曜日別スケジュール設定 -->
+            </div>
+            
+            <div class="form-group" style="margin-top: 30px;">
+                <label>レッスン時間設定</label>
+                <div style="display: flex; gap: 20px; align-items: center; flex-wrap: wrap;">
+                    <div>
+                        <label for="lesson-duration">レッスン時間</label>
+                        <select id="lesson-duration">
+                            <option value="30">30分</option>
+                            <option value="50" selected>50分</option>
+                            <option value="60">60分</option>
+                            <option value="90">90分</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="break-time">休憩時間</label>
+                        <select id="break-time">
+                            <option value="5">5分</option>
+                            <option value="10" selected>10分</option>
+                            <option value="15">15分</option>
+                            <option value="20">20分</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="zoom-meeting-id">Zoom個人ミーティングID（オプション）</label>
+                <input type="text" id="zoom-meeting-id" placeholder="123-456-789">
+                <small>設定すると、すべてのレッスンで同じZoomリンクが使用されます</small>
+            </div>
+        </div>
+        
+        <div class="schedule-setup" style="margin-top: 20px;">
+            <h3>🚫 例外日設定</h3>
+            <p>休講日や特別な日程を設定できます。</p>
+            
+            <div style="display: flex; gap: 10px; align-items: end; margin-bottom: 20px; flex-wrap: wrap;">
+                <div class="form-group" style="margin: 0; flex: 1; min-width: 150px;">
+                    <label for="exception-date">日付</label>
+                    <input type="date" id="exception-date">
+                </div>
+                <div class="form-group" style="margin: 0; flex: 1; min-width: 150px;">
+                    <label for="exception-reason">理由</label>
+                    <input type="text" id="exception-reason" placeholder="休講、会議など">
+                </div>
+                <button class="btn btn-outline" onclick="addException()">追加</button>
+            </div>
+            
+            <div id="exception-list"></div>
+        </div>
+    </div>
+    
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/data-structures.js"></script>
+    <script>
+        let currentTeacher = null;
+        let scheduleData = { weekly: {}, exceptions: [] };
+        
+        document.addEventListener('DOMContentLoaded', async function() {
+            const teacherId = localStorage.getItem('currentTeacher');
+            if (!teacherId) {
+                alert('ログインが必要です');
+                location.href = 'teacher-login.html';
+                return;
+            }
+            
+            currentTeacher = teacherId;
+            
+            if (typeof initializeFirebase !== 'undefined') {
+                initializeFirebase();
+            }
+            
+            loadTeacherInfo();
+            createScheduleGrid();
+            await loadExistingSchedule();
+        });
+        
+        function loadTeacherInfo() {
+            const teacher = DefaultData.teachers.find(t => t.id === currentTeacher);
+            if (teacher) {
+                document.getElementById('teacher-name').textContent = teacher.name;
+                document.getElementById('teacher-avatar').textContent = teacher.avatar;
+                
+                if (teacher.zoomPersonalMeetingId) {
+                    document.getElementById('zoom-meeting-id').value = teacher.zoomPersonalMeetingId;
+                }
+            }
+        }
+        
+        function createScheduleGrid() {
+            const days = ['日', '月', '火', '水', '木', '金', '土'];
+            const grid = document.getElementById('schedule-grid');
+            
+            days.forEach((day, index) => {
+                const dayDiv = document.createElement('div');
+                dayDiv.className = 'time-slot-grid';
+                dayDiv.innerHTML = `
+                    <div class="day-label">${day}曜日</div>
+                    <input type="time" class="time-input" id="start-${index}" value="09:00">
+                    <input type="time" class="time-input" id="end-${index}" value="17:00">
+                    <button class="toggle-btn" id="toggle-${index}" onclick="toggleDay(${index})">OFF</button>
+                `;
+                grid.appendChild(dayDiv);
+                
+                if (currentTeacher === 'suzuki' && index === 6) {
+                    toggleDay(index);
+                }
+            });
+        }
+        
+        function toggleDay(dayIndex) {
+            const toggleBtn = document.getElementById(`toggle-${dayIndex}`);
+            const startInput = document.getElementById(`start-${dayIndex}`);
+            const endInput = document.getElementById(`end-${dayIndex}`);
+            
+            const isActive = toggleBtn.classList.contains('active');
+            
+            if (isActive) {
+                toggleBtn.classList.remove('active');
+                toggleBtn.textContent = 'OFF';
+                startInput.disabled = true;
+                endInput.disabled = true;
+                delete scheduleData.weekly[dayIndex];
+            } else {
+                toggleBtn.classList.add('active');
+                toggleBtn.textContent = 'ON';
+                startInput.disabled = false;
+                endInput.disabled = false;
+                
+                scheduleData.weekly[dayIndex] = {
+                    startTime: startInput.value,
+                    endTime: endInput.value,
+                    isActive: true
+                };
+            }
+            
+            updateTimeInputs(dayIndex);
+        }
+        
+        function updateTimeInputs(dayIndex) {
+            const startInput = document.getElementById(`start-${dayIndex}`);
+            const endInput = document.getElementById(`end-${dayIndex}`);
+            
+            if (scheduleData.weekly[dayIndex]) {
+                scheduleData.weekly[dayIndex].startTime = startInput.value;
+                scheduleData.weekly[dayIndex].endTime = endInput.value;
+            }
+            
+            startInput.addEventListener('change', () => {
+                if (scheduleData.weekly[dayIndex]) {
+                    scheduleData.weekly[dayIndex].startTime = startInput.value;
+                }
+            });
+            
+            endInput.addEventListener('change', () => {
+                if (scheduleData.weekly[dayIndex]) {
+                    scheduleData.weekly[dayIndex].endTime = endInput.value;
+                }
+            });
+        }
+        
+        async function loadExistingSchedule() {
+            try {
+                if (typeof FirebaseDB !== 'undefined') {
+                    const schedules = await FirebaseDB.getTeacherSchedule(currentTeacher);
+                    
+                    schedules.forEach(schedule => {
+                        if (schedule.type === 'recurring' && schedule.recurring) {
+                            const dayIndex = schedule.recurring.dayOfWeek;
+                            const startInput = document.getElementById(`start-${dayIndex}`);
+                            const endInput = document.getElementById(`end-${dayIndex}`);
+                            
+                            if (startInput && endInput) {
+                                startInput.value = schedule.recurring.startTime;
+                                endInput.value = schedule.recurring.endTime;
+                                
+                                if (schedule.recurring.isActive) {
+                                    toggleDay(dayIndex);
+                                }
+                            }
+                        } else if (schedule.type === 'exception' && schedule.exception) {
+                            scheduleData.exceptions.push(schedule.exception);
+                        }
+                    });
+                    
+                    renderExceptions();
+                }
+            } catch (error) {
+                console.error('既存スケジュール読み込みエラー:', error);
+            }
+        }
+        
+        function addException() {
+            const dateInput = document.getElementById('exception-date');
+            const reasonInput = document.getElementById('exception-reason');
+            
+            if (!dateInput.value) {
+                alert('日付を入力してください');
+                return;
+            }
+            
+            const exception = {
+                date: dateInput.value,
+                reason: reasonInput.value || '休講',
+                isUnavailable: true
+            };
+            
+            scheduleData.exceptions.push(exception);
+            renderExceptions();
+            
+            dateInput.value = '';
+            reasonInput.value = '';
+        }
+        
+        function renderExceptions() {
+            const listEl = document.getElementById('exception-list');
+            
+            if (scheduleData.exceptions.length === 0) {
+                listEl.innerHTML = '<p>例外日は設定されていません</p>';
+                return;
+            }
+            
+            const html = scheduleData.exceptions.map((exception, index) => `
+                <div class="booking-item">
+                    <div class="booking-info">
+                        <div class="booking-time">${exception.date}</div>
+                        <div class="booking-student">${exception.reason}</div>
+                    </div>
+                    <button class="btn btn-outline" onclick="removeException(${index})" style="padding: 4px 8px; font-size: 12px;">削除</button>
+                </div>
+            `).join('');
+            
+            listEl.innerHTML = html;
+        }
+        
+        function removeException(index) {
+            if (confirm('この例外日を削除しますか？')) {
+                scheduleData.exceptions.splice(index, 1);
+                renderExceptions();
+            }
+        }
+        
+        async function saveSchedule() {
+            try {
+                const duration = parseInt(document.getElementById('lesson-duration').value);
+                const breakTime = parseInt(document.getElementById('break-time').value);
+                const zoomId = document.getElementById('zoom-meeting-id').value;
+                
+                const savePromises = [];
+                
+                // 基本スケジュールの保存
+                for (const [dayIndex, daySchedule] of Object.entries(scheduleData.weekly)) {
+                    const scheduleRecord = {
+                        teacherId: currentTeacher,
+                        type: 'recurring',
+                        recurring: {
+                            dayOfWeek: parseInt(dayIndex),
+                            startTime: daySchedule.startTime,
+                            endTime: daySchedule.endTime,
+                            duration: duration,
+                            breakTime: breakTime,
+                            isActive: daySchedule.isActive
+                        }
+                    };
+                    
+                    if (typeof FirebaseDB !== 'undefined') {
+                        savePromises.push(FirebaseDB.saveTeacherSchedule(currentTeacher, scheduleRecord));
+                    }
+                }
+                
+                // 例外日の保存
+                scheduleData.exceptions.forEach(exception => {
+                    const exceptionRecord = {
+                        teacherId: currentTeacher,
+                        type: 'exception',
+                        exception: exception
+                    };
+                    
+                    if (typeof FirebaseDB !== 'undefined') {
+                        savePromises.push(FirebaseDB.saveTeacherSchedule(currentTeacher, exceptionRecord));
+                    }
+                });
+                
+                if (savePromises.length > 0) {
+                    await Promise.all(savePromises);
+                    alert('スケジュールを保存しました！');
+                } else {
+                    // Firebase未設定時はローカルストレージに保存
+                    localStorage.setItem(`schedule_${currentTeacher}`, JSON.stringify({
+                        weekly: scheduleData.weekly,
+                        exceptions: scheduleData.exceptions,
+                        settings: { duration, breakTime, zoomId }
+                    }));
+                    alert('スケジュールを保存しました！（ローカル保存）');
+                }
+                
+            } catch (error) {
+                console.error('保存エラー:', error);
+                alert('保存中にエラーが発生しました');
+            }
+        }
+        
+        // 入力イベントリスナーの設定
+        document.getElementById('lesson-duration').addEventListener('change', updateScheduleSettings);
+        document.getElementById('break-time').addEventListener('change', updateScheduleSettings);
+        
+        function updateScheduleSettings() {
+            // 設定変更時の処理（必要に応じて実装）
+        }
+    </script>
+</body>
+</html>
